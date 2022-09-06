@@ -10,8 +10,11 @@ import { prisma } from "../../server/db/client";
 import { z } from "zod";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
 
-// @ts-ignore
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+interface FetcherArgs {
+    url: string;
+    options: RequestInit;
+};
+const fetcher = (fetchArgs: FetcherArgs) => fetch(fetchArgs.url, fetchArgs.options).then((res) => res.json());
 
 
 const addTeamMemberSchema = z.object({
