@@ -52,13 +52,6 @@ const teams = async (req: NextApiRequest, res: NextApiResponse): Promise<void> =
                                 userId: session.user.id
                             }
                         },
-                        Invertory: {
-                            create: {
-                                name: `${req.body.name}'s invertory`,
-                                slug: slugify(req.body.name, { lower: true, strict: true }) + '-invertory',
-                            }
-                        }
-
                     }
                 });
                 res.status(200).json({ message: 'Success', data: newTeam });
