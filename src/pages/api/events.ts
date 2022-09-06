@@ -54,7 +54,7 @@ const events = async (req: NextApiRequest, res: NextApiResponse) => {
     } else if (req.method === 'POST') {
         const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         const teamId = req.headers['teamid'] as string;
-        let systemWide = teamId === process.env.SYSTEM_SECRET;
+        const systemWide = teamId === process.env.SYSTEM_SECRET;
 
         const newEvent = await prisma.event.create({
             data: {

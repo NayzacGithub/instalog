@@ -7,8 +7,8 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 
 interface FetcherArgs {
-    url: string;
-    options: RequestInit;
+    url: string
+    options: RequestInit
 };
 const fetcher = (fetchArgs: FetcherArgs) => fetch(fetchArgs.url, fetchArgs.options).then((res) => res.json());
 
