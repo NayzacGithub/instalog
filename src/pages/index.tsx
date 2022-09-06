@@ -1,7 +1,9 @@
+import { IncomingMessage, ServerResponse } from "http";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import InstaLogLogo from "../components/InstalogLogo";
+import { getServerAuthSession } from "../server/common/get-server-auth-session";
 
 
 
@@ -53,5 +55,22 @@ const Home: NextPage = () => {
 };
 
 
+export async function getServerSideProps(context: { req: IncomingMessage & { cookies: Partial<{ [key: string]: string; }>; }; res: ServerResponse; }) {
+  const session = await getServerAuthSession(context);
+  if (session && session.user != null) {
+    return {
+      redirect: {
+        destination: '/dashboard',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+
+    },
+  };
+
+}
 
 export default Home;

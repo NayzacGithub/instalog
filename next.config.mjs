@@ -17,6 +17,14 @@ export default defineNextConfig({
   swcMinify: true,
   images: {
     domains: ["avatars.githubusercontent.com", "cdn.discordapp.com"],
+  },
+  async redirects() {
+    return [
+      {
+        source: "/login",
+        source: "/api/auth/signin",
+        permanent: true
+      }
+    ]
   }
-
 });
