@@ -80,7 +80,7 @@ const DashboardPage = () => {
                         </form>
                     </div>
                     {teams && teams.data?.map((team: any) => (
-                        <Link href={`/${team.slug}`}>
+                        <Link href={`/${team.slug}`} key={team.id}>
                             <a className="bg-white rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition p-5 group">
                                 <div className="flex justify-between">
                                     <div className="flex items-center">
