@@ -4,7 +4,7 @@ import { InstalogEventWithId } from "../utils/InstalogInterfaces";
 import debounce from "lodash.debounce";
 import { ExportIcon, FilterIcon, LiveIcon } from "./SVGIcons";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-
+import Image from "next/image";
 
 interface FetcherArgs {
     url: string
@@ -36,7 +36,9 @@ const ActionLogged: React.FunctionComponent<ActionLoggedProps> = ({ instalogEven
         <div >
             {!expanded && <div className="grid grid-cols-3 py-4 hover:bg-[#fbfbfb] transition-colors duration-75 px-5  cursor-pointer" onClick={toggle}>
                 <div className="flex gap-2">
-                    <img src={instalogEvent.actor?.image} alt="Avatar" className="my-auto h-6 w-6 rounded-full" />
+
+                    {instalogEvent.actor?.image && <Image src={instalogEvent.actor?.image} alt="Avatar" className="my-auto h-6 w-6 rounded-full" />}
+
                     <span className="my-auto">{`${instalogEvent.actor?.email}`}</span>
                 </div>
                 <div className="flex">
