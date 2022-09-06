@@ -5,8 +5,12 @@ import debounce from "lodash.debounce";
 import { ExportIcon, FilterIcon, LiveIcon } from "./SVGIcons";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 
-// @ts-ignore
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
+interface FetcherArgs {
+    url: string;
+    options: RequestInit;
+};
+const fetcher = (fetchArgs: FetcherArgs) => fetch(fetchArgs.url, fetchArgs.options).then((res) => res.json());
 
 interface ActionLoggedProps {
     instalogEvent: InstalogEventWithId;
@@ -146,7 +150,7 @@ const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
     const [eventsUrl, setEventsUrl] = useState<string>('/api/events');
     const [events, setEvents] = useState<Set<InstalogEventWithId>>(new Set());
     const [swrRefreshInterval, setSwrRefreshInterval] = useState<1000 | 0>(1000);
-    const { data: eventResponse, mutate, isValidating } = useSWR([eventsUrl, { method: "GET" }], fetcher, { refreshInterval: swrRefreshInterval, refreshWhenHidden: true });
+    const { data: eventResponse, mutate } = useSWR({ url: eventsUrl, headers: { method: "GET" } }, fetcher, { refreshInterval: swrRefreshInterval, refreshWhenHidden: true });
 
     const handleLoadMore = (): void => {
         const newUrl = new URL("http://localhost:3000/api/events");
@@ -174,7 +178,7 @@ const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
     }, [requestQuery]);
     useMemo(() => {
         if (eventResponse?.data) {
-            setEvents(previousEvents => new Set([...(eventResponse.data as InstalogEventWithId[])]));
+            setEvents(new Set([...(eventResponse.data as InstalogEventWithId[])]));
         }
     }, [eventResponse?.data, requestQuery.searchTerm])
 
@@ -246,9 +250,9 @@ const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
                         <div><span>DATE</span></div>
                     </div>
                 </header>
-                {/* @ts-ignore */}
-                <main className="bg-white grid" ref={animationParent}>
-                    {events && Array.from(events).map((evt: InstalogEventWithId, n) => <ActionLogged key={evt.id} instalogEvent={evt} />)}
+
+                <main className="bg-white grid" ref={animationParent as React.RefObject<HTMLElement>}>
+                    {events && Array.from(events).map((evt: InstalogEventWithId) => <ActionLogged key={evt.id} instalogEvent={evt} />)}
                 </main>
                 <footer className="bg-[#f5f5f5] text-center text-[#575757] font-semibold py-3 cursor-pointer" onClick={handleLoadMore}>
                     LOAD MORE

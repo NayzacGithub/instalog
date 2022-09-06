@@ -20,7 +20,7 @@ export interface InstalogEvent {
     actor?: BasicInstalogActor,
     action?: InstalogAction,
     target?: any,
-    metadata?: Object,
+    metadata?: any,
     userId?: string,
     system?: boolean,
     occuredAt?: string,
@@ -67,7 +67,7 @@ class InstaLog {
     }
 
     logEvent = async (event: InstalogEvent): Promise<void> => {
-        const response = await fetch(`${this.baseUrl}/api/events`, {
+        await fetch(`${this.baseUrl}/api/events`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

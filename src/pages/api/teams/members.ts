@@ -1,10 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { unstable_getServerSession } from "next-auth";
 import { prisma } from "../../../server/db/client";
-import { authOptions } from "../auth/[...nextauth]";
 const teamMembers = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
-    const session = await unstable_getServerSession(req, res, authOptions);
-
     const { method } = req;
     const { teamSlug } = req.query;
     //TODO REMOVE TEAM MEMBER

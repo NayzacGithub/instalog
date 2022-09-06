@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
-import slugify from "slugify";
 import { prisma } from "../../server/db/client";
 import { authOptions } from "./auth/[...nextauth]";
 

@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -6,17 +6,20 @@ import slugify from 'slugify';
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
 
-// @ts-ignore
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-const RestirtedPageTest = () => {
-    const { data: session } = useSession();
+interface FetcherArgs {
+    url: string;
+    options: RequestInit;
+};
+const fetcher = (fetchArgs: FetcherArgs) => fetch(fetchArgs.url, fetchArgs.options).then((res) => res.json());
+
+const DashboardPage = () => {
     const { data: teams, mutate } = useSWR('/api/teams', fetcher);
     const [slug, setSlug] = useState<string>();
     const [teamName, setTeamName] = useState<string>();
 
     const createTeam = async () => {
-        const res = await fetch('/api/teams', {
+        await fetch('/api/teams', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -111,4 +114,4 @@ export async function getServerSideProps(context: any) {
     };
 }
 
-export default RestirtedPageTest;
+export default DashboardPage;

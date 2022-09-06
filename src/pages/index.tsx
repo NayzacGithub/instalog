@@ -13,23 +13,13 @@ const Naviagtion: React.FunctionComponent = () => {
           <div className="flex items-center justify-between w-full max-w-screen-lg py-4 mx-auto">
             <div className="flex items-center justify-start w-1/3">
               <span >
-                <a href="/" >
+                <a >
                   <InstaLogLogo />
                 </a>
               </span>
             </div>
             <div className="flex items-center justify-center flex-grow antialiased">
-              <ul className="flex items-center">
-                <li className="relative transition duration-200 ease-in-out text-gray-300 hover:text-white">
-                  <a href="#" className="px-6 py-3 rounded-lg inline-block whitespace-nowrap ">Why?</a>
-                </li>
-                <li className="relative transition duration-200 ease-in-out text-gray-300 hover:text-white">
-                  <a href="#" className="px-6 py-3 rounded-lg inline-block whitespace-nowrap ">Gallery</a>
-                </li>
-                <li className="relative transition duration-200 ease-in-out text-gray-300 hover:text-white">
-                  <a href="#" className="px-6 py-3 rounded-lg inline-block whitespace-nowrap ">Pricing</a>
-                </li>
-              </ul>
+
             </div>
             <div className="flex items-center justify-end w-1/3">
               <ul className="flex items-center">

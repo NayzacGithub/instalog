@@ -9,7 +9,7 @@ const deleteTeamMember = async (req: NextApiRequest, res: NextApiResponse) => {
     const { teamSlug, memberId } = JSON.parse(req.body);
     switch (_method) {
         case "DELETE":
-            const deletedMember = await prisma.teamMember.findFirst({
+            await prisma.teamMember.findFirst({
                 where: {
                     id: memberId,
                     team: {
@@ -40,7 +40,7 @@ const deleteTeamMember = async (req: NextApiRequest, res: NextApiResponse) => {
                             id: member.userId,
                             name: member.user.name,
                             email: member.user.email,
-                            
+
                         },
                         userId: member.userId,
                     });

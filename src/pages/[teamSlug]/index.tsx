@@ -9,25 +9,13 @@ import InstaLog from "../../utils/Instalog";
 import Head from "next/head";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
 import ActivityLog from "../../components/ActivityLog";
-// @ts-ignore
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-interface ToolbarProps {
-    exports?: boolean,
-    liveFeed?: boolean,
-    filter?: boolean,
-}
 
-const Toolbar: React.FunctionComponent<ToolbarProps> = ({ exports, liveFeed, filter }) => {
-    return (
-        <div className="flex border-collapse border rounded-lg border-[#E0E0DF] text-[#575757]">
-            <input type="text" placeholder="Search name, email or action..." className="bg-transparent p-3 grow text-[575757] min-w-[250px] border-none " />
-            {filter && <button className="p-2 border-l">FILTER</button>}
-            {exports && <button className="p-2 border-l">EXPORT</button>}
-            {liveFeed && <button className="p-2 border-l">LIVE</button>}
-        </div>
-    );
-}
+interface FetcherArgs {
+    url: string;
+    options: RequestInit;
+};
+const fetcher = (fetchArgs: FetcherArgs) => fetch(fetchArgs.url, fetchArgs.options).then((res) => res.json());
 
 
 
@@ -72,9 +60,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     if (team && session) {
         const log = new InstaLog(team.id);
-        const event = await log.logEvent({
-            //@ts-ignore
-            actor: { ...session.user },
+        await log.logEvent({
+            actor: {
+                id: session?.user?.id!,
+                name: session?.user?.name!,
+                email: session?.user?.email!,
+                image: session?.user?.image!,
+            },
             object: "team",
             action: {
                 name: "viewed_activity_log",
