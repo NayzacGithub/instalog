@@ -3,7 +3,6 @@ import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "../../../server/db/client";
 import InstaLog from "../../../utils/Instalog";
-import { BasicInstalogActor } from "../../../utils/InstalogInterfaces";
 
 const addTeamMember = async (req: NextApiRequest, res: NextApiResponse) => {
     const _method = req.method;

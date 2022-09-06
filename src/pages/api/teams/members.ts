@@ -12,7 +12,7 @@ const teamMembers = async (req: NextApiRequest, res: NextApiResponse): Promise<v
         const teamMembers = await prisma.teamMember?.findMany({
             where: {
                 team: {
-                    slug: teamSlug as string
+                    slug: teamSlug as string,
                 }
             },
             include: {

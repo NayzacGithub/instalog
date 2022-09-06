@@ -1,16 +1,12 @@
 import { GetServerSidePropsContext, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
-import InstaLogLogo from "../../components/InstalogLogo";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { useRouter } from "next/router";
 import { Team } from "../../schemas/team.schema";
 import { prisma } from "../../server/db/client";
-import InstaLog from "../../utils/Instalog";
-import { InstalogEventWithId } from "../../utils/InstalogInterfaces";
 import { z } from "zod";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
 
