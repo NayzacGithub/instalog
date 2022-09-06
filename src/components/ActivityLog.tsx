@@ -10,7 +10,7 @@ interface FetcherArgs {
     url: string
     options: RequestInit
 };
-const fetcher = (fetchArgs: FetcherArgs) => fetch(fetchArgs.url, fetchArgs.options).then((res) => res.json());
+const fetcher = ({ url, options }: FetcherArgs) => fetch(url, options).then((res) => res.json());
 
 interface ActionLoggedProps {
     instalogEvent: InstalogEventWithId;
@@ -36,9 +36,7 @@ const ActionLogged: React.FunctionComponent<ActionLoggedProps> = ({ instalogEven
         <div >
             {!expanded && <div className="grid grid-cols-3 py-4 hover:bg-[#fbfbfb] transition-colors duration-75 px-5  cursor-pointer" onClick={toggle}>
                 <div className="flex gap-2">
-
-                    {instalogEvent.actor?.image && <Image src={instalogEvent.actor?.image} alt="Avatar" className="my-auto h-6 w-6 rounded-full" />}
-
+                    {instalogEvent.actor?.image && <Image src={instalogEvent.actor?.image} alt="Avatar" className="my-auto rounded-full" width={24} height={24} />}
                     <span className="my-auto">{`${instalogEvent.actor?.email}`}</span>
                 </div>
                 <div className="flex">

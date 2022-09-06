@@ -15,14 +15,15 @@ interface FetcherArgs {
     url: string;
     options: RequestInit;
 };
-const fetcher = (fetchArgs: FetcherArgs) => fetch(fetchArgs.url, fetchArgs.options).then((res) => res.json());
+
+const fetcher = ({ url, options }: FetcherArgs) => fetch(url, options).then((res) => res.json());
 
 
 
 const TeamActivity: NextPage = () => {
     const router = useRouter();
     const { teamSlug } = router.query;
-    const { data: team } = useSWR(`/api/teams?teamSlug=${teamSlug}`, fetcher);
+    const { data: team } = useSWR({ url: `/api/teams?teamSlug=${teamSlug}` }, fetcher);
 
     return (
         <>
