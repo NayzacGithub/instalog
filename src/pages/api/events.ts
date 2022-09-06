@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { unstable_getServerSession } from "next-auth";
 import { prisma } from "../../server/db/client";
-import { authOptions } from "./auth/[...nextauth]";
 
 interface GetParameters {
     searchTerm?: string;
@@ -12,10 +10,8 @@ interface GetParameters {
 }
 
 const events = async (req: NextApiRequest, res: NextApiResponse) => {
-    const session = await unstable_getServerSession(req, res, authOptions);
     if (req.method === 'GET') {
         const { searchTerm, cursor, pageCount }: GetParameters = req.query;
-        const isSearching = searchTerm && searchTerm.length > 0;
         console.log(req.query);
         const { teamslug } = req.headers;
         const events = await prisma.event?.findMany({
