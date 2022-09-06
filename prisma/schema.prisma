@@ -78,47 +78,17 @@ model Team {
     updatedAt DateTime     @updatedAt
     members   TeamMember[]
     events    Event[]
-    Invertory Invertory?
-}
-
-model TeamMemberPermission {
-    id         String       @id @default(cuid())
-    name       String
-    createdAt  DateTime     @default(now())
-    updatedAt  DateTime     @updatedAt
-    TeamMember TeamMember[]
 }
 
 model TeamMember {
-    id                     String                 @id @default(cuid())
-    team                   Team                   @relation(fields: [teamId], references: [id])
-    teamId                 String
-    user                   User                   @relation(fields: [userId], references: [id])
-    userId                 String
-    createdAt              DateTime               @default(now())
-    updatedAt              DateTime               @updatedAt
-    TeamMemberPermissions  TeamMemberPermission[]
-    teamMemberPermissionId String?
-    deleted                Boolean                @default(false)
-    @@index(userId)
-}
-
-model Invertory {
     id        String   @id @default(cuid())
-    name      String
-    slug      String   @unique @db.VarChar(255)
+    team      Team     @relation(fields: [teamId], references: [id])
+    teamId    String
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    items     Item[]
-    teamId    String?  @unique
-    Team      Team?    @relation(fields: [teamId], references: [id])
-}
+    deleted   Boolean  @default(false)
 
-model Item {
-    id          String     @id @default(cuid())
-    name        String
-    qty         Int?
-    slug        String     @unique @db.VarChar(255)
-    Invertory   Invertory? @relation(fields: [invertoryId], references: [id])
-    invertoryId String?
+    @@index(userId)
 }
