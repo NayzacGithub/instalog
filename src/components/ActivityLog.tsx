@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import useSWR from "swr";
-import { InstalogEventWithId } from "../utils/Instalog";
+import { InstalogEventWithId } from "../utils/InstalogInterfaces";
 import debounce from "lodash.debounce";
 import { ExportIcon, FilterIcon, LiveIcon } from "./SVGIcons";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
