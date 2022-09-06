@@ -1,9 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import DashboardNavigation from "../DashboardNavigation";
-import InstaLogLogo from "../InstalogLogo";
-
 interface DashbaordLayoutProps {
     children: React.ReactNode;
     teamView?: boolean;
