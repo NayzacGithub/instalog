@@ -82,15 +82,21 @@ model Team {
     events    Event[]
 }
 
+enum TeamMemberRole {
+    ADMIN
+    MEMBER
+}
+
 model TeamMember {
-    id        String   @id @default(cuid())
-    team      Team     @relation(fields: [teamId], references: [id])
+    id        String         @id @default(cuid())
+    team      Team           @relation(fields: [teamId], references: [id])
     teamId    String
-    user      User     @relation(fields: [userId], references: [id])
+    user      User           @relation(fields: [userId], references: [id])
     userId    String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    deleted   Boolean  @default(false)
+    role      TeamMemberRole @default(MEMBER)
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @updatedAt
+    deleted   Boolean        @default(false)
 
     @@index(userId)
 }
