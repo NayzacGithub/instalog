@@ -32,7 +32,7 @@ const AddTeamMembersPage: NextPage<AddTeamMemberProps> = ({ team }) => {
     const { data: session } = useSession();
     const router = useRouter();
     const { teamSlug } = router.query;
-    const { data: teamMembers, mutate } = useSWR(`/api/teams/members?teamSlug=${teamSlug}`, fetcher);
+    const { data: teamMembers, mutate } = useSWR({ url: `/api/teams/members?teamSlug=${teamSlug}` }, fetcher);
     const [email, setEmail] = useState<string>("");
     const addTeamMember = async (teamMember: AddTeamMemberInput) => {
         const result = await fetch('/api/teams/addTeamMember', {
