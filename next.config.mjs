@@ -22,7 +22,7 @@ export default defineNextConfig({
     return [
       {
         source: "/login",
-        source: "/api/auth/signin",
+        destination: "/api/auth/signin",
         permanent: true
       }
     ]
