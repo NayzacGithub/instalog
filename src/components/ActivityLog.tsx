@@ -134,44 +134,27 @@ const ActionLogged: React.FunctionComponent<ActionLoggedProps> = ({ instalogEven
     )
 }
 
-interface EventRequestQuery {
-    pageCount: number;
-    cursor: number;
-    searchTerm?: string;
-    teamSlug: string;
-}
-
 interface ActivityLogProps {
     team: any;
 }
 
 const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
     const teamSlug = team.data.slug;
-    const [requestQuery, setRequestQuery] = useState<EventRequestQuery>({ teamSlug: teamSlug as string, pageCount: 5, cursor: 0, searchTerm: undefined });
-    const [eventsUrl, setEventsUrl] = useState<string>('/api/events');
+    const [requestQuery, setRequestQuery] = useState<URLSearchParams>(new URLSearchParams({ 'searchTerm': '', 'pageCount': '10', 'cursor': '0', 'teamSlug': teamSlug }));
+    const [eventsUrl, setEventsUrl] = useState<URL>(new URL(`${env.NEXT_PUBLIC_BASE_URL}/api/events?${requestQuery.toString()}`));
     const [events, setEvents] = useState<Set<InstalogEventWithId>>(new Set());
     const [swrRefreshInterval, setSwrRefreshInterval] = useState<1000 | 0>(1000);
     const { data: eventResponse, mutate } = useSWR({ url: eventsUrl, options: { method: "GET" } }, fetcher, { refreshInterval: swrRefreshInterval, refreshWhenHidden: true });
 
     const handleLoadMore = (): void => {
-        const newUrl = new URL(`${env.NEXT_PUBLIC_BASE_URL}/api/events`);
-        setRequestQuery({ ...requestQuery, pageCount: requestQuery.pageCount += 5 });
-        newUrl.searchParams.append("pageCount", (requestQuery.pageCount).toString());
-        newUrl.searchParams.append("cursor", (requestQuery.cursor).toString());
-        newUrl.searchParams.append("teamSlug", requestQuery.teamSlug);
-        setEventsUrl(newUrl.toString());
+        setRequestQuery((searchParams: URLSearchParams) => { searchParams.set('pageCount', (parseInt(searchParams.get('pageCount') || '0') + 5).toString()); return searchParams; });
+        setEventsUrl(new URL(`${env.NEXT_PUBLIC_BASE_URL}/api/events?${requestQuery.toString()}`));
     }
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const newUrl = new URL(`${env.NEXT_PUBLIC_BASE_URL}/api/events`);
-        newUrl.searchParams.append("pageCount", requestQuery.pageCount.toString());
-        newUrl.searchParams.append("cursor", requestQuery.cursor.toString());
-        newUrl.searchParams.append("teamSlug", requestQuery.teamSlug);
-        newUrl.searchParams.append("searchTerm", e.target.value);
-        setEventsUrl(newUrl.toString());
+        setRequestQuery((searchParams: URLSearchParams) => { searchParams.set('searchTerm', e.target.value || ""); return searchParams; });
+        setEventsUrl(new URL(`${env.NEXT_PUBLIC_BASE_URL}/api/events?${requestQuery.toString()}`));
     }
-
-
     // Debounce to prevent too many requests
     const debounceHandleSearch = useMemo(() => debounce(handleSearch, 300), [eventsUrl, requestQuery]);
     useEffect(() => {
@@ -181,7 +164,8 @@ const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
         if (eventResponse?.data) {
             setEvents(new Set([...(eventResponse.data as InstalogEventWithId[])]));
         }
-    }, [eventResponse?.data, requestQuery.searchTerm])
+    }, [eventResponse?.data, requestQuery.get('searchTerm')])
+
 
     const handleExportToCSV = (): void => {
         let csvHeader = "id,actor_id,actor_name,actor_email,object,action_name,target_id,target_name,occured_at,time\n";
