@@ -5,6 +5,7 @@ import debounce from "lodash.debounce";
 import { ExportIcon, FilterIcon, LiveIcon } from "./SVGIcons";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import Image from "next/image";
+import { env } from "../env/client.mjs";
 
 interface FetcherArgs {
     url: string
@@ -153,7 +154,7 @@ const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
     const { data: eventResponse, mutate } = useSWR({ url: eventsUrl, options: { method: "GET" } }, fetcher, { refreshInterval: swrRefreshInterval, refreshWhenHidden: true });
 
     const handleLoadMore = (): void => {
-        const newUrl = new URL("/api/events");
+        const newUrl = new URL(`${env.NEXT_PUBLIC_BASE_URL}/api/events`);
         setRequestQuery({ ...requestQuery, pageCount: requestQuery.pageCount += 5 });
         newUrl.searchParams.append("pageCount", (requestQuery.pageCount).toString());
         newUrl.searchParams.append("cursor", (requestQuery.cursor).toString());
@@ -162,7 +163,7 @@ const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
     }
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const newUrl = new URL("/api/events");
+        const newUrl = new URL(`${env.NEXT_PUBLIC_BASE_URL}/api/events`);
         newUrl.searchParams.append("pageCount", requestQuery.pageCount.toString());
         newUrl.searchParams.append("cursor", requestQuery.cursor.toString());
         newUrl.searchParams.append("teamSlug", requestQuery.teamSlug);
