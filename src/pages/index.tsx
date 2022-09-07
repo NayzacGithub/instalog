@@ -36,6 +36,7 @@ const Naviagtion: React.FunctionComponent = () => {
         </div>
       </div>
     </header>
+
   );
 }
 
@@ -49,6 +50,25 @@ const Home: NextPage = () => {
       </Head>
       <div className="flex flex-col min-h-screen font-sans">
         <Naviagtion />
+        <section className="text-white">
+          <div className="max-w-screen-xl px-4 py-32 mx-auto lg:h-screen lg:items-center lg:flex">
+            <div className="max-w-3xl mx-auto text-center">
+              <h1 className="text-3xl font-extrabold text-transparent sm:text-5xl bg-clip-text bg-gradient-to-r from-indigo-300 via-indigo-500 to-indigo-600">
+                Cloud infra for logging
+                <span className="sm:block h-[56px] mt-3">
+                  <ul className="relative w-full h-full text-center">
+                    <li className="animatedListItem">Incidents</li>
+                    <li className="animatedListItem">Team Activities</li>
+                    <li className="animatedListItem">Actions</li>
+                  </ul>
+                </span>
+              </h1>
+              <p className="max-w-xl mx-auto mt-4 sm:leading-relaxed sm:text-xl">
+                Instalog is a cloud based logging platform for teams. It helps teams to log their activities and incidents.
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
     </>
   );
