@@ -1,6 +1,5 @@
 import { GetServerSidePropsContext, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import useSWR from "swr";
 import { authOptions } from "../api/auth/[...nextauth]";
@@ -10,6 +9,7 @@ import { Team } from "../../schemas/team.schema";
 import { prisma } from "../../server/db/client";
 import { z } from "zod";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
+import { toast } from "react-toastify";
 
 interface FetcherArgs {
     url: string;
@@ -29,7 +29,6 @@ interface AddTeamMemberProps {
 }
 
 const AddTeamMembersPage: NextPage<AddTeamMemberProps> = ({ team }) => {
-    const { data: session } = useSession();
     const router = useRouter();
     const { teamSlug } = router.query;
     const { data: teamMembers, mutate } = useSWR({ url: `/api/teams/members?teamSlug=${teamSlug}` }, fetcher);
@@ -43,7 +42,11 @@ const AddTeamMembersPage: NextPage<AddTeamMemberProps> = ({ team }) => {
             }),
         })
         if (result.status === 200) {
+            toast.success("Team member added successfully");
             mutate();
+        } else {
+            const error = await result.json();
+            toast.error(error.message);
         }
     }
 
@@ -91,14 +94,13 @@ const AddTeamMembersPage: NextPage<AddTeamMemberProps> = ({ team }) => {
                             </div>
                         </label>
                     </div>
-
                     <button type="submit" className="bg-gray-800 text-white py-3 px-2 mt-5 col-span-2 rounded-xl">Add team member</button>
                 </form>
 
                 <div className="grid grid-cols-2 items-center justify-between w-full h-full  gap-5">
                     {teamMembers && teamMembers.data.map((teamMember: any) =>
                         <div className="border rounded-xl p-5 bg-white shadow-xl text-gray-900 flex gap-5 mx-auto relative" key={teamMember.id}>
-                            {teamMember.user.role != "ADMIN" &&
+                            {teamMember.role != "ADMIN" &&
                                 < a className="absolute top-3 right-3 cursor-pointer hover:scale-110 transition-transform" onClick={() => handleUserDelete(teamMember.id)} >
                                     🗑️
                                 </a>

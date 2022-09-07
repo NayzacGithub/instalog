@@ -6,14 +6,15 @@ interface GetParameters {
     cursor?: string;
     pageCount?: string;
     teamSlug?: string;
-
+    sortDate?: 'desc' | 'asc';
+    filterAction?: string;
 }
 
 const events = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'GET') {
-        const { searchTerm, cursor, pageCount }: GetParameters = req.query;
-        console.log(req.query);
+        const { searchTerm, cursor, pageCount, sortDate, filterAction }: GetParameters = req.query;
         const { teamslug } = req.headers;
+        const isFilterAction = (filterAction && filterAction?.length > 0);
         const events = await prisma.event?.findMany({
             take: parseInt(pageCount as string, 10) || 5,
             where: {
@@ -32,11 +33,18 @@ const events = async (req: NextApiRequest, res: NextApiResponse) => {
                         team: {
                             slug: teamslug as string,
                         }
+                    },
+                    {
+                        object: isFilterAction ? filterAction?.split('.')[0] : undefined,
+                        action: isFilterAction ? {
+                            string_contains: filterAction?.split('.')[1] ?? undefined,
+                            path: '$.name',
+                        } : undefined,
                     }
                 ]
             },
             orderBy: {
-                occuredAt: 'desc'
+                occuredAt: sortDate as 'desc' | 'asc' || 'desc',
             },
             select: {
                 id: true,
@@ -50,7 +58,11 @@ const events = async (req: NextApiRequest, res: NextApiResponse) => {
             }
 
         });
-        res.status(200).json({ message: 'success', data: events, pagination: { pageCount: pageCount, cursor: cursor }, count: events?.length || 0 });
+        const actions = await prisma.event.groupBy({
+            by: ['action', 'object'],
+        });
+
+        res.status(200).json({ message: 'success', data: events, pagination: { pageCount: pageCount, cursor: cursor }, count: events?.length || 0, actions: actions });
     } else if (req.method === 'POST') {
         const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         const teamId = req.headers['teamid'] as string;

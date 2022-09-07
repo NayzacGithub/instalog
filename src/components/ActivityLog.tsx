@@ -138,12 +138,21 @@ interface ActivityLogProps {
     team: any;
 }
 
+interface InstalogAction {
+    object: string;
+    action: {
+        name: string;
+    }
+}
+
 const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
     const teamSlug = team.data.slug;
-    const [requestQuery, setRequestQuery] = useState<URLSearchParams>(new URLSearchParams({ 'searchTerm': '', 'pageCount': '10', 'cursor': '0', 'teamSlug': teamSlug }));
+    const [requestQuery, setRequestQuery] = useState<URLSearchParams>(new URLSearchParams({ 'searchTerm': '', 'pageCount': '5', 'cursor': '0', 'teamSlug': teamSlug, 'sortDate': 'desc', 'filterAction': '' }));
     const [eventsUrl, setEventsUrl] = useState<URL>(new URL(`${env.NEXT_PUBLIC_BASE_URL}/api/events?${requestQuery.toString()}`));
     const [events, setEvents] = useState<Set<InstalogEventWithId>>(new Set());
+    const [actions, setActions] = useState<InstalogAction[]>([]);
     const [swrRefreshInterval, setSwrRefreshInterval] = useState<1000 | 0>(1000);
+    const [showingFilters, setShowingFilters] = useState<boolean>(false);
     const { data: eventResponse, mutate } = useSWR({ url: eventsUrl, options: { method: "GET" } }, fetcher, { refreshInterval: swrRefreshInterval, refreshWhenHidden: true });
 
     const handleLoadMore = (): void => {
@@ -159,10 +168,11 @@ const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
     const debounceHandleSearch = useMemo(() => debounce(handleSearch, 300), [eventsUrl, requestQuery]);
     useEffect(() => {
         mutate();
-    }, [requestQuery]);
+    }, [eventsUrl, requestQuery]);
     useMemo(() => {
         if (eventResponse?.data) {
             setEvents(new Set([...(eventResponse.data as InstalogEventWithId[])]));
+            setActions(eventResponse?.actions);
         }
     }, [eventResponse?.data, requestQuery.get('searchTerm')])
 
@@ -196,18 +206,38 @@ const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
         }
     };
 
+    const handleToggleSortDateDirection = (): void => {
+        if (requestQuery.get('sortDate') === 'desc') {
+            setRequestQuery((searchParams: URLSearchParams) => { searchParams.set('sortDate', 'asc'); return searchParams; });
+        } else {
+            setRequestQuery((searchParams: URLSearchParams) => { searchParams.set('sortDate', 'desc'); return searchParams; });
+        }
+        setEventsUrl(new URL(`${env.NEXT_PUBLIC_BASE_URL}/api/events?${requestQuery.toString()}`));
+    };
+
     const [animationParent] = useAutoAnimate({
         easing: "ease-in",
-
     });
+
+    const handleEventTypeFilter = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+        const value = e.target.value as string;
+        console.log(value);
+        setRequestQuery((searchParams: URLSearchParams) => { searchParams.set('filterAction', value); return searchParams; });
+        setEventsUrl(new URL(`${env.NEXT_PUBLIC_BASE_URL}/api/events?${requestQuery.toString()}`));
+        mutate();
+    }
+
+    const handleToggleShowingFilters = (): void => {
+        setShowingFilters(!showingFilters);
+    }
 
     return (
         <div className="bg-white border-x border-b rounded-b-2xl shadow lg:pb-10  min-h-[457px] relative">
             <section className="bg-[#f5f5f5] border rounded-lg max-w-fit mx-auto ">
                 <header className="px-5 py-3">
                     <div className="flex border-collapse border rounded-lg border-[#E0E0DF] text-[#575757]">
-                        <input type="text" placeholder="Search name, email or action..." className="bg-transparent p-3 grow text-[575757] min-w-[250px] border-none " onChange={debounceHandleSearch} />
-                        <button className="toolbarActionButton">
+                        <input type="text" placeholder="Search name, email or action..." className="bg-transparent p-3 grow text-[575757] min-w-[250px] border-none" onChange={debounceHandleSearch} />
+                        <button className="toolbarActionButton" onClick={handleToggleShowingFilters}>
                             <FilterIcon />
                             <span className="my-auto">
                                 FILTER
@@ -229,10 +259,34 @@ const ActivityLog: React.FunctionComponent<ActivityLogProps> = ({ team }) => {
                         </button>
 
                     </div>
+                    {showingFilters && <div className="grid py-2 px-4 bg-gray-200 my-2 border rounded">
+                        <h1 className="font-semibold text-xl text-gray-800">Filters:</h1>
+                        <div className="grid gap-1 max-w-md py-1  ">
+                            <span className="my-auto">
+                                Event Type:
+                            </span>
+                            <div className="flex gap-1">
+                                <select className=" rounded bg-white/50 border-gray-300 flex-1" onChange={handleEventTypeFilter} defaultValue="">
+                                    <option value="" >any</option>
+                                    {actions.map((action: InstalogAction) => {
+                                        return <option key={action.object + '.' + action.action.name} value={action.object + '.' + action.action.name}>{action.object}.{action.action.name}
+                                        </option>
+                                    })}
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>}
                     <div className="grid grid-cols-3 mt-2 text-[#575757] text-sm font-semibold min-w-[933px]">
-                        <div><span>ACTOR</span></div>
-                        <div><span>ACTION</span></div>
-                        <div><span>DATE</span></div>
+                        <div className={'flex gap-2'}><span className={'my-auto'}>ACTOR</span></div>
+                        <div className={'flex gap-2'}><span className={'my-auto'}>ACTION</span></div>
+                        <div className={'flex gap-2'}><span className={'my-auto'}>DATE</span>
+                            <span className="my-auto cursor-pointer" onClick={handleToggleSortDateDirection}>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                                    <path fillRule="evenodd" d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z" clipRule="evenodd" />
+                                </svg>
+                            </span>
+                        </div>
                     </div>
                 </header>
 
