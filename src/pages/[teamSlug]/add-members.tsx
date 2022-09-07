@@ -15,7 +15,7 @@ interface FetcherArgs {
     url: string;
     options: RequestInit;
 };
-const fetcher = (fetchArgs: FetcherArgs) => fetch(fetchArgs.url, fetchArgs.options).then((res) => res.json());
+const fetcher = ({ url, options }: FetcherArgs) => fetch(url, options).then((res) => res.json());
 
 
 const addTeamMemberSchema = z.object({
