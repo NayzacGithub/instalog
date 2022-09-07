@@ -103,7 +103,7 @@ const AddTeamMembersPage: NextPage<AddTeamMemberProps> = ({ team }) => {
                                     🗑️
                                 </a>
                             }
-                            {teamMember.user?.image && <Image src={teamMember.user.image} alt="Avatar" className="my-auto h-6 w-6 rounded-full" />}
+                            {teamMember.user?.image && <Image src={teamMember.user.image} alt="Avatar" className="my-auto h-6 w-6 rounded-full" width={24} height={24} />}
                             <div className="flex flex-col">
                                 <h1 className="text-xl font-bold">{teamMember.user?.name}</h1>
                                 <h1 className="text-xl mb-2">{teamMember.user?.email}</h1>
