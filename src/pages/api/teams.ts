@@ -48,7 +48,8 @@ const teams = async (req: NextApiRequest, res: NextApiResponse): Promise<void> =
                         slug: req.body.slug,
                         members: {
                             create: {
-                                userId: session.user.id
+                                userId: session.user.id,
+                                role: "ADMIN"
                             }
                         },
                     }

@@ -98,7 +98,7 @@ const AddTeamMembersPage: NextPage<AddTeamMemberProps> = ({ team }) => {
                 <div className="grid grid-cols-2 items-center justify-between w-full h-full  gap-5">
                     {teamMembers && teamMembers.data.map((teamMember: any) =>
                         <div className="border rounded-xl p-5 bg-white shadow-xl text-gray-900 flex gap-5 mx-auto relative" key={teamMember.id}>
-                            {teamMember.user.id != session?.user?.id &&
+                            {teamMember.user.role != "ADMIN" &&
                                 < a className="absolute top-3 right-3 cursor-pointer hover:scale-110 transition-transform" onClick={() => handleUserDelete(teamMember.id)} >
                                     🗑️
                                 </a>

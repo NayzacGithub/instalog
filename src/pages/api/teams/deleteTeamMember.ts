@@ -20,7 +20,7 @@ const deleteTeamMember = async (req: NextApiRequest, res: NextApiResponse) => {
                     user: true
                 }
             }).then(async (member) => {
-                if (member) {
+                if (member && member.role != "ADMIN") {
                     await prisma.teamMember.delete({
                         where: {
                             id: memberId
