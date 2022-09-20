@@ -11,13 +11,25 @@ import { env } from "../../../env/server.mjs";
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
+    jwt({ token }) {
+      return Promise.resolve(token);
+    },
+    session({session,token}){
+      if(session.user && token.sub){
+        session.user.id = token.sub
       }
       return session;
-    },
+    }
   },
+  session: {
+    strategy: 'jwt'
+  },
+  jwt: {
+    secret: env.NEXTAUTH_SECRET,
+    maxAge: 60 * 60 * 24 * 30,
+  },
+
+
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
   providers: [
