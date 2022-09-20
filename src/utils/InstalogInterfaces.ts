@@ -13,6 +13,7 @@ export interface BasicInstalogActor {
 
 export interface InstalogAction {
     name?: string;
+    icon?: string;
 }
 
 export interface InstalogEvent {
