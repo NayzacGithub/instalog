@@ -19,3 +19,28 @@ export const LiveIcon = ({ isLive }: LiveIconProps) => {
         {isLive && <span className="absolute left-0 right-0 top-0 bottom-0 my-auto mx-auto rounded-full w-full h-full animate-ping bg-[#8f485d]"></span>}
     </span>
 }
+
+
+interface ActivitySummaryIconProps {
+    icon?: "priority" | "edit"
+    className?: string
+}
+
+export const ActivitySummaryIcon: React.FunctionComponent<ActivitySummaryIconProps> = ({ icon, className }) => {
+    switch (icon) {
+        case "priority":
+            return (<svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+                <rect y="6.39474" width="3.68421" height="8.10526" rx="1" fill="#373737" />
+                <rect x="5.1579" y="4.18421" width="3.68421" height="10.3158" rx="1" fill="#373737" />
+                <rect x="10.3158" y="0.5" width="3.68421" height="14" rx="1" fill="#D9D9D9" />
+            </svg>)
+
+        case "edit":
+            return (<svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+                <path fillRule="evenodd" clipRule="evenodd" d="M12.1829 0.105716C12.3401 0.0359229 12.5087 0 12.6789 0C12.8491 0 13.0176 0.0359229 13.1749 0.105716C13.3321 0.175508 13.475 0.277803 13.5953 0.406765L13.6206 0.433777L13.6207 0.433985C13.8636 0.694367 14 1.04741 14 1.4155C14 1.7836 13.8636 2.13664 13.6207 2.39702L13.6206 2.39723L13.2238 2.82235C12.9346 3.13215 12.4659 3.13215 12.1767 2.82235L11.3657 1.95336C11.2268 1.80455 11.1488 1.60271 11.1488 1.39226C11.1489 1.18181 11.2269 0.980004 11.3659 0.831258L11.7624 0.406765C11.8828 0.277806 12.0256 0.175509 12.1829 0.105716ZM10.4531 2.13738C10.6496 2.13725 10.8381 2.22084 10.9771 2.36973L11.7881 3.23872C11.9271 3.38761 12.0051 3.58958 12.005 3.80014C12.0048 4.0107 11.9266 4.21257 11.7875 4.36127L2.60674 14.1737C2.53795 14.2472 2.45633 14.3055 2.36652 14.3453L1.02307 14.9399C0.746539 15.0623 0.428437 14.9943 0.216874 14.7676C0.00531181 14.541 -0.0581233 14.2001 0.0561049 13.9038L0.611054 12.4644C0.64815 12.3682 0.702559 12.2807 0.77118 12.207L9.92936 2.37042C10.0681 2.22135 10.2566 2.13751 10.4531 2.13738Z" fill="black" />
+            </svg>
+            )
+        default:
+            return (<></>)
+    }
+};
