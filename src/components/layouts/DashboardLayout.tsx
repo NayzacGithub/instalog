@@ -13,6 +13,7 @@ interface DashbaordLayoutProps {
 const DashboardLayout: React.FunctionComponent<DashbaordLayoutProps> = ({ children, teamView, team }: DashbaordLayoutProps) => {
     const teamSlug = team?.data?.slug || team?.slug;
     const router = useRouter();
+
     return (
         <>
             <div className="flex flex-col min-h-screen">
@@ -43,8 +44,8 @@ const DashboardLayout: React.FunctionComponent<DashbaordLayoutProps> = ({ childr
                         </div>
                     </div>
                 </header >
-                <main className="bg-[#f5f5f5] grow">
-                    <div className=" max-w-5xl mx-auto">
+                <main className="bg-[#f5f5f5] grow ">
+                    <div className=" max-w-5xl mx-auto shadow-lg rounded-b-2xl">
                         {children}
                     </div>
                 </main>
